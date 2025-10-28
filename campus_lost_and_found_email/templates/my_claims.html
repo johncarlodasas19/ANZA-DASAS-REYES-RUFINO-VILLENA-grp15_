@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>My Claims</h3>
+<div class="list-group">
+  {% for it in claims %}
+    <div class="list-group-item">
+      <div class="d-flex">
+        <div class="me-3" style="width:120px">
+          {% if it.photo %}<img src="{{ url_for('static', filename='uploads/' + it.photo) }}" style="width:120px;object-fit:cover">{% endif %}
+        </div>
+        <div>
+          <strong>{{ it.name }}</strong> <small>({{ it.type }})</small><br>
+          Status: <span class="badge bg-info">{{ it.status }}</span><br>
+          {% if it.match_score is not none %}AI Match: {{ it.match_score }}%<br>{% endif %}
+          {% if it.proof_image %}Proof: <a href="{{ url_for('static', filename='uploads/' + it.proof_image) }}" target="_blank">View</a>{% endif %}
+          {% if it.id_image %} | ID: <a href="{{ url_for('static', filename='uploads/' + it.id_image) }}" target="_blank">View</a>{% endif %}
+        </div>
+        <div class="ms-auto">
+          <a class="btn btn-sm btn-outline-primary" href="{{ url_for('view_item', item_id=it.id) }}">Open</a>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="list-group-item">You have not submitted any claims.</div>
+  {% endfor %}
+</div>
+{% endblock %}

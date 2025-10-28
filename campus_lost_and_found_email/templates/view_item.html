@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+  <div class="col-md-8">
+    <div class="card mb-3 shadow-sm">
+      <div class="row g-0">
+        <div class="col-md-4">
+          {% if item.photo %}<img src="{{ url_for('static', filename='uploads/' ~ item.photo) }}" class="img-fluid rounded-start">{% else %}<img src="{{ url_for('static', filename='uploads/placeholder.jpg') }}" class="img-fluid rounded-start">{% endif %}
+        </div>
+        <div class="col-md-8"><div class="card-body">
+          <h5 class="card-title">{{ item.type|capitalize }} - {{ item.name }}</h5>
+          <p class="card-text">{{ item.description }}</p>
+          <p class="card-text"><small class="text-muted">Location: {{ item.location }}</small></p>
+          <p>Status: <span class="badge bg-info">{{ item.status }}</span></p>
+          <form method="post" action="{{ url_for('claim_item', item_id=item.id) }}" class="d-inline"><button class="btn btn-success">Claim</button></form>
+          {% if current_user.is_admin %}
+            <a href="{{ url_for('admin_claim_action', item_id=item.id, action='approve') }}" class="btn btn-sm btn-primary">Approve</a>
+            <a href="{{ url_for('admin_claim_action', item_id=item.id, action='reject') }}" class="btn btn-sm btn-warning">Reject</a>
+          {% endif %}
+        </div></div>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-3"><div class="card-body">
+      <h6>AI Matches</h6>
+      <div class="row g-2">
+        {% for m in similar %}
+          <div class="col-md-4"><div class="card">
+            <img src="{{ m.photo }}" class="card-img-top" style="height:120px;object-fit:cover">
+            <div class="card-body p-2"><strong>{{ m.type }} - {{ m.name }}</strong><br><small>{{ m.sim }}% similar</small>
+              <div class="mt-2"><a href="{{ url_for('view_item', item_id=m.id) }}" class="btn btn-sm btn-outline-primary">Open</a></div>
+            </div>
+          </div></div>
+        {% else %}<div class="col"><div class="text-muted">No similar items found.</div></div>{% endfor %}
+      </div>
+    </div></div>
+  </div>
+  <div class="col-md-4"><div class="card shadow-sm"><div class="card-body">
+    <h6>Item Details</h6>
+    <p><strong>Reported by:</strong> {{ item.user_id }}<br><strong>Claimed by:</strong> {{ item.claimed_by or '—' }}</p>
+    <a class="btn btn-link" href="{{ url_for('dashboard') }}">Back to dashboard</a>
+  </div></div></div>
+</div>
+{% endblock %}

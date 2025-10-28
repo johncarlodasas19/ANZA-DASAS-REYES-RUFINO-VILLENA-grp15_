@@ -1,0 +1,6 @@
+Flask==2.3.2
+Flask-Login==0.6.2
+Flask-WTF==1.1.1
+SQLAlchemy==1.4.49
+pillow==10.0.0
+imagehash==4.3.1

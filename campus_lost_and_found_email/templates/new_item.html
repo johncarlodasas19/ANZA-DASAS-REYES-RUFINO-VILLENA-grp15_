@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-md-8"><div class="card shadow-sm"><div class="card-body">
+  <h4>Report Lost or Found</h4>
+  <form id="reportForm" method="post" enctype="multipart/form-data">
+    <div class="mb-3"><label class="form-label">Type</label><select class="form-select" name="type"><option value="lost">Lost</option><option value="found">Found</option></select></div>
+    <div class="mb-3"><label class="form-label">Item name</label><input class="form-control" name="name" required></div>
+    <div class="mb-3"><label class="form-label">Description</label><textarea class="form-control" name="description"></textarea></div>
+    <div class="mb-3"><label class="form-label">Location</label><input class="form-control" name="location"></div>
+    <div class="mb-3"><label class="form-label">Photo</label><input class="form-control" type="file" name="photo" id="photoInput" accept="image/*"><div id="previewBox" class="mt-2"></div></div>
+    <div id="matchesBox" class="mb-3"></div>
+    <button class="btn btn-primary">Submit</button> <a class="btn btn-link" href="{{ url_for('dashboard') }}">Cancel</a>
+  </form>
+</div></div></div></div>
+
+<script>
+document.getElementById('photoInput').addEventListener('change', async function(e){
+  const f = this.files[0];
+  const previewBox = document.getElementById('previewBox');
+  const matchesBox = document.getElementById('matchesBox');
+  previewBox.innerHTML = '';
+  matchesBox.innerHTML = '';
+  if(!f) return;
+  const img = document.createElement('img');
+  img.src = URL.createObjectURL(f);
+  img.style.maxWidth='200px'; img.className='img-thumbnail';
+  previewBox.appendChild(img);
+
+  const fd = new FormData();
+  fd.append('photo', f);
+  const resp = await fetch('{{ url_for('match_preview') }}', {method:'POST', body: fd});
+  if(!resp.ok){ matchesBox.innerHTML = '<div class="alert alert-warning">No match preview available.</div>'; return; }
+  const data = await resp.json();
+  if(data.ok && data.matches.length){
+    let html = '<h6>Possible matches</h6><div class="list-group">';
+    for(const m of data.matches){
+      html += `<div class="list-group-item d-flex align-items-center"><img src="${m.photo}" style="width:64px;height:48px;object-fit:cover;margin-right:12px"><div><strong>${m.type} - ${m.name}</strong><br><small>${m.sim}% similar</small></div><div class="ms-auto"><a class="btn btn-sm btn-outline-primary" href="/items/${m.id}">View</a></div></div>`;
+    }
+    html += '</div>';
+    matchesBox.innerHTML = html;
+  } else {
+    matchesBox.innerHTML = '<div class="alert alert-secondary">No similar items found.</div>';
+  }
+});
+</script>
+{% endblock %}

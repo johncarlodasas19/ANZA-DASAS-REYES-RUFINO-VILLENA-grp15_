@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Admin — Claims</h3>
+<div class="mb-4">
+  <h5>Pending</h5>
+  <div class="list-group mb-3">
+    {% for it in pending %}
+      <div class="list-group-item d-flex align-items-center">
+        <img src="{{ url_for('static', filename='uploads/' ~ (it.photo or 'placeholder.jpg')) }}" style="width:72px;height:56px;object-fit:cover;margin-right:12px">
+        <div><strong>{{ it.type }} - {{ it.name }}</strong><br><small>{{ it.location }}</small></div>
+        <div class="ms-auto">
+          <a class="btn btn-sm btn-success" href="{{ url_for('admin_claim_action', item_id=it.id, action='approve') }}">Approve</a>
+          <a class="btn btn-sm btn-warning" href="{{ url_for('admin_claim_action', item_id=it.id, action='reject') }}">Reject</a>
+          <a class="btn btn-sm btn-danger" href="{{ url_for('admin_claim_action', item_id=it.id, action='delete') }}">Delete</a>
+        </div>
+      </div>
+    {% else %}<div class="list-group-item">No pending claims.</div>{% endfor %}
+  </div>
+  <h5>Returned</h5><div class="list-group mb-3">{% for it in returned %}<div class="list-group-item">{{ it.name }} — returned</div>{% else %}<div class="list-group-item">No returned items.</div>{% endfor %}</div>
+  <h5>Unresolved</h5><div class="list-group">{% for it in unresolved %}<div class="list-group-item">{{ it.name }} — unresolved</div>{% else %}<div class="list-group-item">No unresolved items.</div>{% endfor %}</div>
+</div>
+{% endblock %}
