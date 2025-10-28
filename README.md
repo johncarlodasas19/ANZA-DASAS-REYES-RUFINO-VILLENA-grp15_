@@ -17,8 +17,6 @@ If requirements.txt is missing, install manually: pip install Flask flask-mail
 Run the app:
 python app.py
 
-Open your browser and go to:
-http://127.0.0.1:5000
 
 To stop the server, press CTRL + C
 
@@ -27,4 +25,11 @@ THIS IS RECOMMENDED FASTEST SINCE ALL PACKAGE WAS DOWNLOADED
 
 STEP 1: OPEN NEW TERMINAL IN YOUR VSCODE
 
-STEP 2:  
+STEP 2: TYPE cd campus_lost_and_found_email
+
+STEP 3: TYPE python app.py
+
+STEP 4: Open your browser and go to:
+http://127.0.0.1:5000
+
+
